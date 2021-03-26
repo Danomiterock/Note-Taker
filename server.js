@@ -1,10 +1,10 @@
-const fs = require('fs');
-const uuid = require('uuid');
-const express = require('express');
-const path = require('path');
+const fs = require("fs");
+const uuid = require("uuid");
+const express = require("express");
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 8000;
-const db = require("./db/db.json")
+const db = require("./db/db.json");
 
 //Middleware functions
 app.use(express.urlencoded({ extended: true }));
@@ -13,51 +13,59 @@ app.use(express.json());
 //static file hosting for public directory
 app.use(express.static("public"));
 
-
 //API routes
-app.get("/api/notes", function (req, res){
-    //Retrieve all notes and res.json them back to the front end
-    fs.readFile("db/db.json", "UTF-8", function (err, data){
-        return err ? console.log(err) : res.json(JSON.parse(data));        
-    });
+app.get("/api/notes", function (req, res) {
+  //Retrieve all notes and res.json them back to the front end
+  fs.readFile("db/db.json", "UTF-8", function (err, data) {
+    return err ? console.log(err) : res.json(JSON.parse(data));
+  });
 });
 
-app.post("/api/notes", function (req, res){
-    //Create a note from req.body
-    //read create save read again
-    console.log(req.body);
-    fs.readFile("db/db.json", "UTF-8", function (err, data){
-        if (err) throw err
+app.post("/api/notes", function (req, res) {
+  //Create a note from req.body
+  //read create save read again
+  console.log(req.body);
+  fs.readFile("db/db.json", "UTF-8", function (err, data) {
+    if (err) throw err;
     const jsonData = JSON.parse(data);
-    const newNote = {id:db.length+1, title:req.body.title, text:req.body.text};
+    const newNote = {
+      id: db.length + 1,
+      title: req.body.title,
+      text: req.body.text,
+    };
+    console.log(db.length);
     jsonData.push(newNote);
-    fs.writeFile("db/db.json", JSON.stringify(jsonData), function (err, data){
-        if (err) throw err 
-        res.end(data)
-        });
+    fs.writeFile("db/db.json", JSON.stringify(jsonData), function (err, data) {
+      if (err) throw err;
+      res.end(data);
     });
+  });
 });
 
-app.delete("/api/notes/:id", function (req, res){
-    //Delete a note based off id
-    fs.readFile(__dirname + "/db/db.json", 'utf8', function (err, data) {   
-        if (err) throw err      
-        const notes = JSON.parse(data);    
-        const {id} = req.params;     
-        const newNotes = notes.filter((note) => note.id !== +id);       
-        fs.writeFile(__dirname + '/db/db.json', JSON.stringify(newNotes), function (err, data) {             
-            if (err) throw err
-            res.end("I win")         
-        });     
-    });
+app.delete("/api/notes/:id", function (req, res) {
+  //Delete a note based off id
+  fs.readFile(__dirname + "/db/db.json", "utf8", function (err, data) {
+    if (err) throw err;
+    const notes = JSON.parse(data);
+    const { id } = req.params;
+    const newNotes = notes.filter((note) => note.id !== +id);
+    fs.writeFile(
+      __dirname + "/db/db.json",
+      JSON.stringify(newNotes),
+      function (err, data) {
+        if (err) throw err;
+        res.end("I win");
+      }
+    );
+  });
 });
 
 //HTML routes
-app.get("/notes", function (req, res){
-    res.sendFile(path.join(__dirname, "public", "notes.html"));
+app.get("/notes", function (req, res) {
+  res.sendFile(path.join(__dirname, "public", "notes.html"));
 });
-app.get("/", function (req, res){
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(PORT, () => console.log("App listening on port " + PORT));
