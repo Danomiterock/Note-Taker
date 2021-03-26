@@ -38,12 +38,18 @@ app.post("/api/notes", function (req, res){
     });
 });
 
-app.delete("/db/db.json", function (req, res){
+app.delete("/api/notes/:id", function (req, res){
     //Delete a note based off id
-    fs.readFile("db/db.json", "UTF-8", function (err, data){
-        if (err) throw err
-    const jsonData = JSON.parse(data);
-    const delNote = {id:db.length+1, title:req.body.title, text:req.body.text};
+    fs.readFile(__dirname + "/db/db.json", 'utf8', function (err, data) {   
+        if (err) throw err      
+        const notes = JSON.parse(data);    
+        const {id} = req.params;     
+        const newNotes = notes.filter((note) => note.id !== +id);       
+        fs.writeFile(__dirname + '/db/db.json', JSON.stringify(newNotes), function (err, data) {             
+            if (err) throw err
+            res.end("I win")         
+        });     
+    });
 });
 
 //HTML routes
