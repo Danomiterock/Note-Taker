@@ -33,7 +33,6 @@ app.post("/api/notes", function (req, res) {
       title: req.body.title,
       text: req.body.text,
     };
-    console.log(db.length);
     jsonData.push(newNote);
     fs.writeFile("db/db.json", JSON.stringify(jsonData), function (err, data) {
       if (err) throw err;
