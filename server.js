@@ -34,13 +34,16 @@ app.post("/api/notes", function (req, res){
     fs.writeFile("db/db.json", JSON.stringify(jsonData), function (err, data){
         if (err) throw err 
         res.end(data)
-    });
+        });
     });
 });
 
-app.delete("/api/notes", function (req, res){
+app.delete("/db/db.json", function (req, res){
     //Delete a note based off id
-    
+    fs.readFile("db/db.json", "UTF-8", function (err, data){
+        if (err) throw err
+    const jsonData = JSON.parse(data);
+    const delNote = {id:db.length+1, title:req.body.title, text:req.body.text};
 });
 
 //HTML routes
