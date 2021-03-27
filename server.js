@@ -40,7 +40,6 @@ app.post("/api/notes", function (req, res) {
     });
   });
 });
-
 app.delete("/api/notes/:id", function (req, res) {
   //Delete a note based off id
   fs.readFile("db/db.json", "utf8", function (err, data) {
