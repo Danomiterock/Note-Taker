@@ -29,7 +29,7 @@ app.post("/api/notes", function (req, res) {
     if (err) throw err;
     const jsonData = JSON.parse(data);
     const newNote = {
-      id: db.length + 1,
+      id: uuid(),
       title: req.body.title,
       text: req.body.text,
     };
@@ -43,19 +43,15 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
   //Delete a note based off id
-  fs.readFile(__dirname + "/db/db.json", "utf8", function (err, data) {
+  fs.readFile("db/db.json", "utf8", function (err, data) {
     if (err) throw err;
     const notes = JSON.parse(data);
     const { id } = req.params;
-    const newNotes = notes.filter((note) => note.id !== +id);
-    fs.writeFile(
-      __dirname + "/db/db.json",
-      JSON.stringify(newNotes),
-      function (err, data) {
-        if (err) throw err;
-        res.end("I win");
-      }
-    );
+    const newNotes = notes.filter((note) => note.id !== id);
+    fs.writeFile("db/db.json", JSON.stringify(newNotes), function (err, data) {
+      if (err) throw err;
+      res.end("I win");
+    });
   });
 });
 
